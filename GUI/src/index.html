@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIDI/Audio Particles</title>
+
+    <style>
+      /* Simple "hacker terminal" style */
+      #terminal {
+        font-family: monospace;
+        background-color: black;
+        color: lime;
+        padding: 10px;
+        width: 20%;
+        height: 400px;
+        overflow-y: auto;
+        border: 2px solid lime;
+        margin: 20px auto; /* center horizontally */
+        white-space: pre-wrap; /* preserve newlines and wrapping */
+        position: absolute;
+        right: 0;
+      }
+
+      body {
+        margin: 0;
+        background: #111; /* a darker page background for the "hacker" feel */
+      }
+
+      #overlay {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #click-to-start {
+        color: lime;
+        font-family: monospace;
+      }
+
+      /* Optional styling for the canvas if you're using it */
+      .webgl {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Optional overlay and canvas for your existing project -->
+    <div id="overlay">
+      <h1 id="click-to-start">Click to start.</h1>
+    </div>
+    <canvas class="webgl"></canvas>
+
+    <!-- The "hacker terminal" div -->
+    <div id="terminal"></div>
+
+    <script>
+      let socket;
+
+      function connectWebSocket() {
+        socket = new WebSocket("ws://localhost:4444");
+
+        socket.onopen = () => {
+          console.log("WebSocket connection established!");
+          appendToTerminal("[INFO] WebSocket connection established!");
+        };
+
+        socket.onmessage = (event) => {
+          // Add the incoming text to our terminal div
+          appendToTerminal(event.data);
+        };
+
+        socket.onclose = (event) => {
+          console.log("WebSocket connection closed:", event.reason);
+          appendToTerminal(
+            "[INFO] WebSocket connection closed: " + event.reason
+          );
+          // If you want to automatically reconnect after 5 seconds:
+          // setTimeout(connectWebSocket, 5000);
+        };
+
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          appendToTerminal("[ERROR] WebSocket encountered an error!");
+          // Optionally close and let onclose handle the reconnect
+          socket.close();
+        };
+      }
+
+      function appendToTerminal(text) {
+        const terminalDiv = document.getElementById("terminal");
+        // Append the new line of text
+        terminalDiv.textContent += text + "\n";
+        // Automatically scroll to the bottom
+        terminalDiv.scrollTop = terminalDiv.scrollHeight;
+      }
+
+      // Start the initial connection
+      connectWebSocket();
+    </script>
+  </body>
+</html>
