@@ -1,0 +1,12 @@
+torch
+transformers
+accelerate
+requests
+pyttsx3
+sounddevice
+vosk
+websockets
+PySide6
+opencv-python
+mediapipe
+PyAutoGUI
