@@ -10,8 +10,8 @@ export default merge(commonConfiguration, {
     port: PORT,
     static: "./dist",
     hot: true,
-    open: true,
-    https: true,
+    open: false,
+    https: false,
     allowedHosts: "all",
   },
 });
